@@ -12,6 +12,4 @@ jobs:
     runs-on: [ubuntu-latest]
     steps:
       - name: Run tests
-        run: coverage run src/tests.test.js
-      - name: Tests report
-        run: coverage report
+        run: npm run src/tests.test.js
