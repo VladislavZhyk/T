@@ -1,15 +1,31 @@
-name: Run tests on any Push event
-# Запуск при любом push евенте в любой ветке, за исключением релизных тэгов.
-# Они будт тестироваться перед сборкой
+name: CI/CD
+
 on:
   push:
-    tags:
-      - '!refs/tags/*'
-    branches:
-      - '*'
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
 jobs:
-  run_tests:
-    runs-on: [ubuntu-latest]
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
     steps:
-      - name: Run tests
-        run: npm run src/tests.test.js
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run the tests and generate coverage report
+      run: npm test -- --coverage
